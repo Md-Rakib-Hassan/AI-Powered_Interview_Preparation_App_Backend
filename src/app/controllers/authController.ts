@@ -3,6 +3,7 @@ import config from "../config";
 import UserModel from "../models/User";
 import sendResponse from "../utils/sendResponse";
 import bcrypt from "bcryptjs"
+import { profile } from "console";
 
 
 const generateToken = (userId) => {
@@ -32,12 +33,38 @@ const registerUser = async (req, res) => {
             data: user
         })
     } catch (err) {
-        res.status(500).json({ message: "Server error", error: error.message });
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 }
 
 const loginUser = async (req, res) => {
-    
+    try {
+        const { email, password } = req.body;
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            return res.status(500).json({ message: "Invalid email or password" });
+        }
+        const isMatched = await bcrypt.compare(password, user.password);
+        if (!isMatched) {
+            return res.status(500).json({ message: "Invalid email or password" });
+        }
+
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: "Login Successful.",
+            data: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                profileImageUrl: user.profileImageUrl,
+                token:generateToken(user._id),
+            }
+        })
+    }
+    catch (err) {
+        res.status(500).json({ message: "Server error", error: err.message });
+    }
 }
 
 const getUserProfile = async (req, res) => {
