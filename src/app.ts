@@ -9,17 +9,9 @@ app.use(express.json());
 // fix CORS properly
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (
-        ['http://localhost:5173'].includes(origin)
-      ) {
-        return callback(null, true);
-      }
-      return callback(new Error('Not allowed by CORS'));
-    },
+    origin: '*',
     credentials: true,
-
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
