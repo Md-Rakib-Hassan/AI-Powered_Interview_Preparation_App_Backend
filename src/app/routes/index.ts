@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { AuthRoutes } from "./authRoutes";
 import { AiRoutes } from "./aiRoutes";
+import sessionRoutes from "./sessionRoutes";
 
 
 const router = Router();
@@ -11,10 +12,10 @@ const moduleRoutes = [
         route:AuthRoutes,
     },
     
-    // {
-    //     path: '/sessions',
-    //     route:sessionRoutes,
-    // },
+    {
+        path: '/sessions',
+        route:sessionRoutes,
+    },
     // {
     //     path: '/questions',
     //     route:questionRoutes,
