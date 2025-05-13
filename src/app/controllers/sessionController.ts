@@ -38,7 +38,8 @@ const createSession = async (req, res) => {
 
 const getMySessions = async (req, res) => {
     try {
-        
+        const sessions = await SessionModel.find({ user: req.user.id }).sort({ createdAt: -1 }).populate("questions");
+        res.status(200).json(sessions);
     } catch (error) {
         res.status(500).json({ success: false, message: "Server Error" });
     }
