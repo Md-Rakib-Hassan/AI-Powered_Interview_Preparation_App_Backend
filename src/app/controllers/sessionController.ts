@@ -69,7 +69,17 @@ const getSessionById = async (req, res) => {
 
 const deleteSession = async (req, res) => {
     try {
-        
+        const session = await SessionModel.findById(req.params.id);
+        if (!session) {
+            return res.status(404).json({ message: "Session not found" });
+        }
+
+        if (session.user?.toString() !== req.user.id) {
+            return res.status(401).json({ message: "Not Authorized to delete this session" });
+        }
+        await QuestionModel.deleteMany({ session: session._id });
+        await session.deleteOne();
+        res.status(200).json({ message: "Session deleted successfully" });
     } catch (error) {
         res.status(500).json({ success: false, message: "Server Error" });
     }
